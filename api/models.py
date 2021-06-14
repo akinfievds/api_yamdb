@@ -99,6 +99,7 @@ class Review(models.Model):
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
+        ordering = ('-pub_date',)
 
     FORMAT = (
         'Текст: {text} \n'
@@ -136,7 +137,7 @@ class Review(models.Model):
 
     def __str__(self):
         return self.FORMAT.format(
-            text=textwrap.shorten(self.text, 15),
+            text=textwrap.shorten(self.text, 40),
             title=self.title,
             author=self.author,
             date=self.date.strftime('%b %d %Y %H:%M:%S')
@@ -147,3 +148,41 @@ class Comments(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+        ordering = ('-pub_date',)
+
+    FORMAT = (
+        'Отзыв: {review}\n'
+        'Комментарий: {text}\n'
+        'Дата и время создания: {date}\n'
+        'Автор: {author}'
+    )
+
+    review = models.ForeignKey(
+        Review,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+
+    text = models.TextField(
+        blank=False,
+        verbose_name='Текст комментария'
+    )
+
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата и время добавления комментария'
+    )
+
+    def __str__(self):
+        return self.FORMAT.format(
+            review=self.review,
+            text=textwrap.shorten(self.text, 40),
+            date=self.pub_date,
+            author=self.author
+        )
