@@ -90,3 +90,15 @@ class Title(models.Model):
             genre=self.genre,
             category=self.category,
         )
+
+
+class Reviews(models.Model):
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+
+
+class Comments(models.Model):
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
