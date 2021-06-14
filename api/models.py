@@ -1,4 +1,7 @@
+import textwrap
+
 from django.contrib.auth import get_user_model
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 User = get_user_model()
@@ -92,10 +95,52 @@ class Title(models.Model):
         )
 
 
-class Reviews(models.Model):
+class Review(models.Model):
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
+
+    FORMAT = (
+        'Текст: {text} \n'
+        'На произведение: {title}\n'
+        'Автор: {author}\n'
+        'Дата: {date}'
+    )
+
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE,
+        related_name='reviews'
+    )
+
+    text = models.TextField(
+        blank=False,
+        verbose_name='Текст отзыва'
+    )
+
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='reviews'
+    )
+
+    score = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
+        verbose_name='Оценка отзыва'
+    )
+
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата и время написания отзыва'
+    )
+
+    def __str__(self):
+        return self.FORMAT.format(
+            text=textwrap.shorten(self.text, 15),
+            title=self.title,
+            author=self.author,
+            date=self.date.strftime('%b %d %Y %H:%M:%S')
+        )
 
 
 class Comments(models.Model):
