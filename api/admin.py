@@ -21,7 +21,7 @@ class GenreAdmin(admin.ModelAdmin):
 
 @admin.register(Title)
 class TitleAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'name', 'year', 'genre', 'category', 'description')
+    list_display = ('pk', 'name', 'year', 'category', 'description')
     search_fields = ('name', 'year',)
     list_filter = ('year',)
     empty_value_display = '-пусто-'
