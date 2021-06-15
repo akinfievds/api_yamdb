@@ -66,6 +66,7 @@ class Title(models.Model):
     )
     description = models.TextField(
         blank=True,
+        null=True,
         verbose_name='Описание произведения',
     )
     year = models.PositiveIntegerField(
@@ -135,6 +136,7 @@ class Review(models.Model):
 
     pub_date = models.DateTimeField(
         auto_now_add=True,
+        db_index=True,
         verbose_name='Дата и время написания отзыва'
     )
 
@@ -143,7 +145,7 @@ class Review(models.Model):
             text=textwrap.shorten(self.text, 40),
             title=self.title,
             author=self.author,
-            date=self.date.strftime('%b %d %Y %H:%M:%S')
+            date=self.pub_date.strftime('%b %d %Y %H:%M:%S')
         )
 
 
@@ -162,8 +164,9 @@ class Comments(models.Model):
 
     review = models.ForeignKey(
         Review,
-        on_delete=models.CASCADE,
-        related_name='comments'
+        on_delete=models.SET_NULL,
+        related_name='comments',
+        null=True
     )
 
     text = models.TextField(
@@ -186,6 +189,6 @@ class Comments(models.Model):
         return self.FORMAT.format(
             review=self.review,
             text=textwrap.shorten(self.text, 40),
-            date=self.pub_date,
+            date=self.pub_date.strftime('%b %d %Y %H:%M:%S'),
             author=self.author
         )
