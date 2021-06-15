@@ -29,7 +29,7 @@ class TitleAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'author_id', 'title_id', 'pub_date', 'text', 'score')
+    list_display = ('pk', 'author_id', 'title_id', 'text', 'pub_date', 'score')
     search_fields = ('text', 'pub_date')
     list_filter = ('pub_date',)
     empty_value_display = '-пусто-'
