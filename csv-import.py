@@ -32,6 +32,7 @@ if __name__ == '__main__':
                     'какие-то данные уже есть.' + '\033[0m' + '\nОшибка:'
                 )
                 print(FORMAT, err1)
+                break
             except sqlite3.OperationalError as err2:
                 FORMAT = (
                     '\033[1;31m' + 'Похоже на то, что что-то '
@@ -39,6 +40,7 @@ if __name__ == '__main__':
                     'в CSV или DB.' + '\033[0m' + '\nОшибка:'
                 )
                 print(FORMAT, err2)
+                break
 
     connection.commit()
 
