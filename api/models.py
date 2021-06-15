@@ -184,6 +184,6 @@ class Comments(models.Model):
         return self.FORMAT.format(
             review=self.review,
             text=textwrap.shorten(self.text, 40),
-            date=self.pub_date,
+            date=self.pub_date.strftime('%b %d %Y %H:%M:%S'),
             author=self.author
         )
