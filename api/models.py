@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+from .validators import year_validator
+
 User = get_user_model()
 
 
@@ -47,7 +49,7 @@ class Title(models.Model):
     class Meta:
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
-        ordering = ('-year',)
+        ordering = ('-id',)
 
     FORMAT = (
         'Название произведения: {name}\n'
@@ -64,15 +66,15 @@ class Title(models.Model):
         blank=True,
         verbose_name='Описание произведения',
     )
-    year = models.IntegerField(
+    year = models.PositiveIntegerField(
         blank=True,
+        validators=[year_validator],
         verbose_name='Год выпуска произведения',
     )
     genre = models.ManyToManyField(
         Genre,
         blank=True,
-        null=True,
-        related_name='genres',
+        related_name='titles',
         verbose_name='Жанр',
     )
     category = models.ForeignKey(
@@ -80,7 +82,7 @@ class Title(models.Model):
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
-        related_name='categories',
+        related_name='titles',
         verbose_name='Категория',
     )
 
