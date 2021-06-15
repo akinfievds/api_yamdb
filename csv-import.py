@@ -64,7 +64,7 @@ if __name__ == '__main__':
     cursor = connection.cursor()
 
     result = copy_csv_to_db(path_to_csv=args.csv, table_name=args.table)
-    check_result(path_to_db=args.db, table_name=args.table, error=result)
+    check_result(path_to_db=args.db, table_name=args.table, result=result)
 
     connection.commit()
     connection.close()
