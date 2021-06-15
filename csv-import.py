@@ -25,8 +25,7 @@ def copy_csv_to_db(path_to_csv, table_name):
                         'или таблица уже заполнена.' + '\033[0m' + '\nОшибка:'
                     )
                     print(msg1, err1)
-                    error = True
-                    break
+                    return False
                 except sqlite3.OperationalError as err2:
                     msg2 = (
                         '\033[1;31m' + 'Похоже на то, что что-то '
@@ -34,15 +33,14 @@ def copy_csv_to_db(path_to_csv, table_name):
                         'в CSV или DB.' + '\033[0m' + '\nОшибка:'
                     )
                     print(msg2, err2)
-                    error = True
-                    break
-    return error
+                    return False
+    return True
 
 
-def check_result(path_to_db, table_name, error=None):
+def check_result(path_to_db, table_name, result=None):
     select_all = 'SELECT * FROM {table}'.format(table=args.table)
     db_echo = cursor.execute(select_all).fetchall()
-    if not error and db_echo:
+    if result and db_echo:
         print(
             'В таблицу {table} базы данных {db} записаны '
             'следующие строки:'.format(
