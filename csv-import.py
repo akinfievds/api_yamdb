@@ -41,7 +41,7 @@ if __name__ == '__main__':
                 print(FORMAT, err2)
 
     connection.commit()
-    
+
     print(
         'В таблицу {table} базы данных {db} записаны следующие строки:'.format(
             table=args.table,
