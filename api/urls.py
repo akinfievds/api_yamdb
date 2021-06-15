@@ -7,9 +7,9 @@ from .views import GenreViewSet, CategoryViewSet, TitleViewSet
 
 
 router_v1 = DefaultRouter()
-router_v1.register('/v1/genres', GenreViewSet, basename='genres')
-router_v1.register('/v1/categories', CategoryViewSet, basename='categories')
-router_v1.register('/v1/titles', TitleViewSet, basename='titles')
+router_v1.register('v1/genres', GenreViewSet, basename='genres')
+router_v1.register('v1/categories', CategoryViewSet, basename='categories')
+router_v1.register('v1/titles', TitleViewSet, basename='titles')
 
 urlpatterns = [
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
