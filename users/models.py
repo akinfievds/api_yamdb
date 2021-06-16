@@ -6,18 +6,30 @@ class User(AbstractUser):
     USER = 'USER'
     ADMIN = 'ADMIN'
     MODERATOR = 'MODERATOR'
-    ADMIN_DJANGO = 'ADMIN_DJANGO'
 
     ROLES_CHOICES = [
         (USER, 'user'),
         (ADMIN, 'admin'),
         (MODERATOR, 'moderator'),
-        (ADMIN_DJANGO, 'admin_django'),
     ]
-    password = None
-    bio = models.CharField(max_length=300, blank=True)
+    email = models.EmailField(
+        unique=True,
+        verbose_name='Электронная почта'
+    )
+    bio = models.CharField(
+        max_length=300,
+        blank=True,
+        verbose_name='Информация о пользователе'
+    )
     role = models.CharField(
         max_length=12,
         choices=ROLES_CHOICES,
         default=USER
     )
+    confirmation_code = models.CharField(
+        max_length=20,
+        blank=True
+    )
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
