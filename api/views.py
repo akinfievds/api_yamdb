@@ -4,9 +4,11 @@ from rest_framework import filters, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from api.models import Category, Genre, Title
-from api.serializers import (CategorySerializer, GenreSerializer,
-                             ReviewSerializer, TitleSerializer)
+from api.models import Category, Genre, Review, Title
+from api.permissions import ReviewCommentPermission
+from api.serializers import (CategorySerializer, CommentsSerializer,
+                             GenreSerializer, ReviewSerializer,
+                             TitleSerializer)
 
 
 class GenreViewSet(viewsets.ModelViewSet):
@@ -38,8 +40,18 @@ class TitleViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     pagination_class = PageNumberPagination
-    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    permission_classes = [ReviewCommentPermission, ]
 
     def get_queryset(self):
         title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
         return title.reviews.all()
+
+
+class CommentsViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentsSerializer
+    pagination_class = PageNumberPagination
+    permission_classes = [ReviewCommentPermission, ]
+
+    def get_queryset(self):
+        review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
+        return review.comments.all()

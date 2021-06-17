@@ -3,7 +3,7 @@ import csv
 import sqlite3
 
 
-def copy_csv_to_db(path_to_csv, table_name):
+def copy_csv_to_db(path_to_csv, table_name, cursor=None):
     with open(path_to_csv) as file:
         line = 0
         for row in csv.reader(file):
@@ -19,6 +19,13 @@ def copy_csv_to_db(path_to_csv, table_name):
             if line != 1:
                 try:
                     cursor.execute(insert_records, row)
+                except AttributeError as err0:
+                    msg0 = (
+                        '\033[1;31m' + 'Похоже с подключением что-то не так. '
+                        'Проверьте параметры.' + '\033[0m' + '\nОшибка:'
+                    )
+                    print(msg0, err0)
+                    return False
                 except sqlite3.IntegrityError as err1:
                     msg1 = (
                         '\033[1;31m' + 'Похоже с данными что-то не так '
@@ -29,8 +36,9 @@ def copy_csv_to_db(path_to_csv, table_name):
                 except sqlite3.OperationalError as err2:
                     msg2 = (
                         '\033[1;31m' + 'Похоже на то, что что-то '
-                        'не так с названиями или количеством столбцов '
-                        'в CSV или DB.' + '\033[0m' + '\nОшибка:'
+                        'не так с названиями, количеством столбцов '
+                        'в CSV или DB или самой таблицей' + '\033[0m'
+                        + '\nОшибка:'
                     )
                     print(msg2, err2)
                     return False
@@ -63,7 +71,10 @@ if __name__ == '__main__':
     connection = sqlite3.connect(args.db)
     cursor = connection.cursor()
 
-    result = copy_csv_to_db(path_to_csv=args.csv, table_name=args.table)
+    result = copy_csv_to_db(
+        path_to_csv=args.csv,
+        table_name=args.table,
+        cursor=cursor)
     check_result(path_to_db=args.db, table_name=args.table, result=result)
 
     connection.commit()
