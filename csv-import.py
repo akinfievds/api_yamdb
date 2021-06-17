@@ -1,5 +1,6 @@
 import argparse
 import csv
+import re
 import sqlite3
 
 
@@ -18,6 +19,9 @@ def copy_csv_to_db(path_to_csv, table_name, cursor=None):
             ).format(table=table_name, headers=headers, values=values)
             if line != 1:
                 try:
+                    if '"' in row[0]:
+                        new = re.split(r",(?!\s)", row[0])
+                        cursor.execute(insert_records, new)
                     cursor.execute(insert_records, row)
                 except AttributeError as err0:
                     msg0 = (

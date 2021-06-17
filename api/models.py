@@ -63,6 +63,7 @@ class Title(models.Model):
     )
     name = models.CharField(
         max_length=200,
+        db_index=True,
         verbose_name='Название произведения',
     )
     description = models.TextField(
@@ -116,7 +117,8 @@ class Review(models.Model):
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
-        related_name='reviews'
+        related_name='reviews',
+        null=True
     )
 
     text = models.TextField(
@@ -127,7 +129,8 @@ class Review(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='reviews'
+        related_name='reviews',
+        null=True
     )
 
     score = models.IntegerField(
@@ -165,7 +168,7 @@ class Comments(models.Model):
 
     review = models.ForeignKey(
         Review,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='comments',
         null=True
     )
