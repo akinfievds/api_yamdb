@@ -9,14 +9,15 @@ from api.models import Category, Genre, Review, Title
 from api.permissions import ReviewCommentPermission
 from api.serializers import (CategorySerializer, CommentsSerializer,
                              GenreSerializer, ReviewSerializer,
-                             TitleSerializer)
+                             TitleGetSerializer, TitlePostSerializer)
+from users.permissions import IsAdminOrReadOnly
 
 
 class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     pagination_class = PageNumberPagination
-    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAdminOrReadOnly, ]
     filter_backends = [filters.SearchFilter]
     search_fields = ['=name', ]
 
@@ -25,7 +26,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = PageNumberPagination
-    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAdminOrReadOnly, ]
     filter_backends = [filters.SearchFilter]
     search_fields = ['=name', ]
 
@@ -33,10 +34,16 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.annotate(rating=Avg(
         'reviews__score')).order_by('-id')
-    serializer_class = TitleSerializer
+    serializer_class = TitlePostSerializer
     pagination_class = PageNumberPagination
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAdminOrReadOnly, ]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['name', 'year', 'genre', 'category', ]
+    filterset_fields = ['name', 'year', 'genre__slug', 'category__slug', ]
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PATCH'):
+            return TitlePostSerializer
+        return TitleGetSerializer
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
