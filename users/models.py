@@ -5,15 +5,17 @@ from django.db import models
 
 
 class User(AbstractUser):
-    USER = 'USER'
-    ADMIN = 'ADMIN'
-    MODERATOR = 'MODERATOR'
 
-    ROLES_CHOICES = [
-        (USER, 'user'),
-        (ADMIN, 'admin'),
-        (MODERATOR, 'moderator'),
-    ]
+    class UserRole:
+        USER = 'user'
+        ADMIN = 'admin'
+        MODERATOR = 'moderator'
+        choices = [
+            (USER, 'user'),
+            (ADMIN, 'admin'),
+            (MODERATOR, 'moderator'),
+        ]
+
     email = models.EmailField(
         unique=True,
         verbose_name='Электронная почта'
@@ -25,8 +27,8 @@ class User(AbstractUser):
     )
     role = models.CharField(
         max_length=12,
-        choices=ROLES_CHOICES,
-        default=USER
+        choices=UserRole.choices,
+        default=UserRole.USER
     )
     confirmation_code = models.UUIDField(
         default=uuid.uuid4,
