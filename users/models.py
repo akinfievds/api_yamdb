@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -26,9 +28,9 @@ class User(AbstractUser):
         choices=ROLES_CHOICES,
         default=USER
     )
-    confirmation_code = models.CharField(
-        max_length=20,
-        blank=True
+    confirmation_code = models.UUIDField(
+        default=uuid.uuid4,
+        editable=False
     )
 
     USERNAME_FIELD = 'email'
