@@ -3,16 +3,19 @@ from rest_framework.permissions import BasePermission
 
 class IsSuperuser(BasePermission):
     def has_permission(self, request, view):
-        return (
-            request.user == request.user.is_superuser
-        )
+        if request.user.is_authenticated:
+            return (
+                request.user.role == request.user.UserRole.ADMIN
+                or request.user.is_staff
+            )
+        return False
 
 
 class IsAllRolesOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
         return (
-            obj.author == request.user or
-            obj.author == request.user.is_superuser or
-            request.user.role == request.user.UserRole.MODERATOR or
-            request.user.role == request.user.UserRole.ADMIN
+            obj.author == request.user
+            or obj.author == request.user.is_superuser
+            or request.user.role == request.user.UserRole.MODERATOR
+            or request.user.role == request.user.UserRole.ADMIN
         )
