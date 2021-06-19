@@ -10,14 +10,14 @@ router.register('users', UserViewSet)
 
 urlpatterns = [
     path(
-        'token/',
+        'v1/auth/token/',
         TokenObtainPairView.as_view(),
         name='token_obtain_pair'
     ),
     path(
-        'token/refresh/',
+        'v1/auth/token/refresh/',
         TokenRefreshView.as_view(),
         name='token_refresh'
     ),
-    path('', include(router.urls))
+    path('v1/', include(router.urls))
 ]
