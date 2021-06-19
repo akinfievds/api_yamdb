@@ -8,11 +8,9 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from api.filters import TitleFilter
 from api.models import Category, Genre, Review, Title
 from api.permissions import ReviewCommentPermission
-from api.serializers import (
-    CategorySerializer, CommentsSerializer,
-    GenreSerializer, ReviewSerializer,
-    TitleGetSerializer, TitlePostSerializer,
-)
+from api.serializers import (CategorySerializer, CommentsSerializer,
+                             GenreSerializer, ReviewSerializer,
+                             TitleGetSerializer, TitlePostSerializer)
 from users.permissions import IsAdminOrReadOnly
 
 
