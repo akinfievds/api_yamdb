@@ -23,11 +23,12 @@ class IsAllRolesOrReadOnly(BasePermission):
 
 class IsAdminOrReadOnly(BasePermission):
     def has_permission(self, request, view):
-        return (
-            request.method in SAFE_METHODS
-            or request.user.role == request.user.UserRole.ADMIN
-            or request.user.is_staff
-        )
+        if request.user.is_authenticated:
+            return (
+                request.user.role == request.user.UserRole.ADMIN
+                or request.user.is_staff
+            )
+        return request.method in SAFE_METHODS
 
 
 class ReviewCommentPermission(BasePermission):

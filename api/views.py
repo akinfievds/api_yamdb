@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from api.filters import TitleFilter
 from api.models import Category, Genre, Review, Title
@@ -26,7 +25,7 @@ class GenreViewSet(MixinViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     pagination_class = PageNumberPagination
-    permission_classes = [IsAuthenticatedOrReadOnly, IsAdminOrReadOnly, ]
+    permission_classes = [IsAdminOrReadOnly, ]
     filter_backends = [filters.SearchFilter]
     search_fields = ['=name', ]
     lookup_field = 'slug'
@@ -36,7 +35,7 @@ class CategoryViewSet(MixinViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = PageNumberPagination
-    permission_classes = [IsAuthenticatedOrReadOnly, IsAdminOrReadOnly, ]
+    permission_classes = [IsAdminOrReadOnly, ]
     filter_backends = [filters.SearchFilter]
     search_fields = ['=name', ]
     lookup_field = 'slug'
@@ -47,7 +46,7 @@ class TitleViewSet(viewsets.ModelViewSet):
         'reviews__score')).order_by('-id')
     serializer_class = TitlePostSerializer
     pagination_class = PageNumberPagination
-    permission_classes = [IsAuthenticatedOrReadOnly, IsAdminOrReadOnly, ]
+    permission_classes = [IsAdminOrReadOnly, ]
     filter_backends = [DjangoFilterBackend]
     filterset_class = TitleFilter
 
