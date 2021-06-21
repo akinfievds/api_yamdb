@@ -1,13 +1,10 @@
 import textwrap
 
-# from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
+from api.validators import year_validator
 from users.models import User
-
-from .validators import year_validator
-
-# User = get_user_model()
 
 
 class Category(models.Model):
@@ -63,6 +60,7 @@ class Title(models.Model):
     )
     name = models.CharField(
         max_length=200,
+        db_index=True,
         verbose_name='Название произведения',
     )
     description = models.TextField(
@@ -116,7 +114,8 @@ class Review(models.Model):
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
-        related_name='reviews'
+        related_name='reviews',
+        null=True
     )
 
     text = models.TextField(
@@ -127,7 +126,8 @@ class Review(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='reviews'
+        related_name='reviews',
+        null=True
     )
 
     score = models.IntegerField(
@@ -165,7 +165,7 @@ class Comments(models.Model):
 
     review = models.ForeignKey(
         Review,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='comments',
         null=True
     )
