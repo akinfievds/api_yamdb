@@ -29,14 +29,7 @@ class TitleAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = (
-        'pk',
-        'author',
-        'title',
-        'text',
-        'pub_date',
-        'score',
-    )
+    list_display = ('pk', 'author', 'title', 'text', 'pub_date', 'score', )
     search_fields = ('text', 'pub_date', )
     list_filter = ('pub_date', )
     empty_value_display = '-пусто-'
@@ -44,13 +37,7 @@ class ReviewAdmin(admin.ModelAdmin):
 
 @admin.register(Comments)
 class CommentsAdmin(admin.ModelAdmin):
-    list_display = (
-        'pk',
-        'review',
-        'text',
-        'author',
-        'pub_date',
-    )
+    list_display = ('pk', 'review', 'text', 'author', 'pub_date', )
     search_fields = ('text', 'pub_date', )
     list_filter = ('pub_date', )
     empty_value_display = '-пусто-'
