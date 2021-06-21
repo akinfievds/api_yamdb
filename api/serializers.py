@@ -63,10 +63,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         read_only=True,
         default=serializers.CurrentUserDefault(),
     )
-    title = serializers.SlugRelatedField(
-        slug_field='name',
-        read_only=True,
-    )
 
     def validate(self, data):
         request = self.context['request']
@@ -81,7 +77,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         return data
 
     class Meta:
-        fields = '__all__'
+        exclude = ['title', ]
         model = Review
 
 
@@ -90,11 +86,7 @@ class CommentsSerializer(serializers.ModelSerializer):
         slug_field='username',
         read_only=True
     )
-    review = serializers.SlugRelatedField(
-        slug_field='text',
-        read_only=True
-    )
 
     class Meta:
-        fields = '__all__'
+        exclude = ['review', ]
         model = Comments
