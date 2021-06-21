@@ -11,7 +11,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
-        ordering = ('name', )
+        ordering = ('pk', )
 
     name = models.CharField(
         max_length=200,
@@ -30,7 +30,7 @@ class Genre(models.Model):
     class Meta:
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
-        ordering = ('name', )
+        ordering = ('pk', )
 
     name = models.CharField(
         max_length=200,
@@ -89,9 +89,12 @@ class Title(models.Model):
     )
 
     def __str__(self):
+        description = self.description
+        if not self.description:
+            description = '...'
         return self.FORMAT.format(
             name=self.name,
-            description=self.description[:40],
+            description=textwrap.shorten(description, 40),
             year=self.year,
             genre=self.genre,
             category=self.category,

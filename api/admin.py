@@ -31,8 +31,8 @@ class TitleAdmin(admin.ModelAdmin):
 class ReviewAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
-        'author_id__username',
-        'title_id__name',
+        'author',
+        'title',
         'text',
         'pub_date',
         'score',
@@ -46,9 +46,9 @@ class ReviewAdmin(admin.ModelAdmin):
 class CommentsAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
-        'review_id__title',
+        'review',
         'text',
-        'author_id__username',
+        'author',
         'pub_date',
     )
     search_fields = ('text', 'pub_date', )
