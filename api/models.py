@@ -11,7 +11,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
-        ordering = ('name',)
+        ordering = ('name', )
 
     name = models.CharField(
         max_length=200,
@@ -30,7 +30,7 @@ class Genre(models.Model):
     class Meta:
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
-        ordering = ('name',)
+        ordering = ('name', )
 
     name = models.CharField(
         max_length=200,
@@ -49,7 +49,7 @@ class Title(models.Model):
     class Meta:
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
-        ordering = ('-id',)
+        ordering = ('-id', )
 
     FORMAT = (
         'Название произведения: {name}\n'
@@ -102,7 +102,7 @@ class Review(models.Model):
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
-        ordering = ('-pub_date',)
+        ordering = ('-pub_date', )
 
     FORMAT = (
         'Текст: {text} \n'
@@ -154,7 +154,7 @@ class Comments(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
-        ordering = ('-pub_date',)
+        ordering = ('-pub_date', )
 
     FORMAT = (
         'Отзыв: {review}\n'

@@ -8,15 +8,20 @@ from users.models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = (
-            'first_name', 'last_name', 'username', 'bio', 'email', 'role'
-        )
+        fields = [
+            'first_name',
+            'last_name',
+            'username',
+            'bio',
+            'email',
+            'role'
+        ]
 
 
 class SendMessageSerializer(serializers.ModelSerializer):
     class Meta:
+        fields = ['email', ]
         model = User
-        fields = ('email',)
 
 
 class TokenSerializer(TokenObtainPairSerializer):
@@ -28,8 +33,5 @@ class TokenSerializer(TokenObtainPairSerializer):
         self.fields.pop('password')
 
     def validate(self, attrs):
-        authenticate_kwargs = {
-            self.username_field: attrs[self.username_field],
-            'confirmation_code': attrs.get('confirmation_code')
-        }
-        return authenticate_kwargs
+        return {self.username_field: attrs[self.username_field],
+                'confirmation_code': attrs.get('confirmation_code')}
