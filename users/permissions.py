@@ -31,7 +31,7 @@ class IsAdminOrReadOnly(BasePermission):
         return request.method in SAFE_METHODS
 
 
-class ReviewCommentPermission(BasePermission):
+class IsStaffOrReadOnly(BasePermission):
     def has_permission(self, request, view):
         return (
             request.method in SAFE_METHODS

@@ -35,9 +35,9 @@ def send_email(request):
             confirmation_code=confirmation_code
         )
         send_mail(
-            'Passwor for authenticated',
+            'Ваш код подтверждения',
             str(confirmation_code),
-            'admin@admin',
+            'admin@admin.ru',
             [email]
         )
         return Response(
@@ -47,7 +47,7 @@ def send_email(request):
 
 
 class TokenObtainView(TokenObtainPairView):
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny, ]
 
     def post(self, *args, **kwargs):
         serializer = TokenSerializer(data=self.request.data)
@@ -65,14 +65,14 @@ class TokenObtainView(TokenObtainPairView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAdmin, ]
     pagination_class = LimitOffsetPagination
     lookup_field = 'username'
     filter_backends = [filters.SearchFilter]
     search_fields = ['username', ]
 
     @action(methods=['PATCH', 'GET'], detail=False,
-            permission_classes=[IsAuthenticated, IsAllRolesOrReadOnly])
+            permission_classes=[IsAuthenticated, IsAllRolesOrReadOnly, ])
     def me(self, request, *args, **kwargs):
         user = self.request.user
         serializer = self.get_serializer(user)
