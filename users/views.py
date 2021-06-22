@@ -12,7 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from users.models import User
-from users.permissions import IsAdmin, IsAllRolesOrReadOnly
+from users.permissions import IsAdmin  # , IsAuthorOrStaff
 from users.serializers import (SendMessageSerializer, TokenSerializer,
                                UserSerializer)
 
@@ -72,7 +72,7 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields = ['username', ]
 
     @action(methods=['PATCH', 'GET'], detail=False,
-            permission_classes=[IsAuthenticated, IsAllRolesOrReadOnly, ])
+            permission_classes=[IsAuthenticated])  # , IsAuthorOrStaff, ])
     def me(self, request, *args, **kwargs):
         user = self.request.user
         serializer = self.get_serializer(user)

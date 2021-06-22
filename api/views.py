@@ -3,13 +3,14 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from users.permissions import IsAdminOrReadOnly, IsAuthorOrStaffOrReadOnly
 
 from api.filters import TitleFilter
 from api.models import Category, Genre, Review, Title
 from api.serializers import (CategorySerializer, CommentsSerializer,
                              GenreSerializer, ReviewSerializer,
                              TitleGetSerializer, TitlePostSerializer)
-from users.permissions import IsAdminOrReadOnly, IsStaffOrReadOnly
 
 
 class MixinViewSet(
@@ -59,7 +60,10 @@ class TitleViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     pagination_class = PageNumberPagination
-    permission_classes = [IsStaffOrReadOnly, ]
+    permission_classes = [
+        IsAuthorOrStaffOrReadOnly,
+        IsAuthenticatedOrReadOnly
+    ]
 
     def get_queryset(self):
         title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
@@ -73,7 +77,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class CommentsViewSet(viewsets.ModelViewSet):
     serializer_class = CommentsSerializer
     pagination_class = PageNumberPagination
-    permission_classes = [IsStaffOrReadOnly, ]
+    permission_classes = [
+        IsAuthorOrStaffOrReadOnly,
+        IsAuthenticatedOrReadOnly
+    ]
 
     def get_queryset(self):
         review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
