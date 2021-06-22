@@ -45,7 +45,6 @@ class CategoryViewSet(MixinViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.annotate(rating=Avg(
         'reviews__score')).order_by('-id')
-    serializer_class = TitlePostSerializer
     pagination_class = PageNumberPagination
     permission_classes = [IsAdminOrReadOnly, ]
     filter_backends = [DjangoFilterBackend]
