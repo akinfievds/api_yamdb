@@ -68,7 +68,7 @@ class Title(models.Model):
         null=True,
         verbose_name='Описание произведения',
     )
-    year = models.PositiveIntegerField(
+    year = models.PositiveSmallIntegerField(
         blank=True,
         validators=[year_validator],
         verbose_name='Год выпуска произведения',
@@ -113,6 +113,7 @@ class Review(models.Model):
         'Автор: {author}\n'
         'Дата: {date}'
     )
+    SCORE_OVER_RANGE_MSG = 'Оценка отзыва может быть в диапазоне от 1 до 10'
 
     title = models.ForeignKey(
         Title,
@@ -134,7 +135,10 @@ class Review(models.Model):
     )
 
     score = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(10)],
+        validators=[
+            MinValueValidator(1, message=SCORE_OVER_RANGE_MSG),
+            MaxValueValidator(10, message=SCORE_OVER_RANGE_MSG)
+        ],
         verbose_name='Оценка отзыва'
     )
 
