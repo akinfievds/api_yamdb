@@ -5,7 +5,7 @@ from api.views import (
     CategoryViewSet, CommentsViewSet, GenreViewSet, ReviewViewSet,
     TitleViewSet
 )
-from users.views import TokenObtainView, UserViewSet, send_email
+from users.views import UserViewSet, send_email, send_token
 
 router_v1 = DefaultRouter()
 router_v1.register(
@@ -45,7 +45,7 @@ urlpatterns = [
     ),
     path(
         'v1/auth/token/',
-        TokenObtainView.as_view(),
+        send_token,
         name='token_obtain_pair'
     )
 ]

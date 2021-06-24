@@ -7,9 +7,9 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from api.filters import TitleFilter
 from api.models import Category, Genre, Review, Title
-from api.serializers import (                                  # isort:skip
-    CategorySerializer, CommentsSerializer, GenreSerializer,   # isort:skip
-    ReviewSerializer, TitleGetSerializer, TitlePostSerializer  # isort:skip
+from api.serializers import (
+    CategorySerializer, CommentsSerializer, GenreSerializer,
+    ReviewSerializer, TitleGetSerializer, TitlePostSerializer
 )
 from api.permissions import IsAdminOrReadOnly, IsAuthorOrStaffOrReadOnly
 
