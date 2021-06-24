@@ -1,9 +1,18 @@
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from api.views import (CategoryViewSet, CommentsViewSet, GenreViewSet,
-                       ReviewViewSet, TitleViewSet)
+from api.views import (
+    CategoryViewSet, CommentsViewSet, GenreViewSet, ReviewViewSet,
+    TitleViewSet
+)
+from users.views import UserViewSet, send_email, send_token
 
 router_v1 = DefaultRouter()
+router_v1.register(
+    'v1/users',
+    UserViewSet,
+    basename='users'
+)
 router_v1.register(
     'v1/genres',
     GenreViewSet,
@@ -30,5 +39,14 @@ router_v1.register(
     basename='titles'
 )
 
-urlpatterns = []
+urlpatterns = [
+    path(
+        'v1/auth/email/', send_email
+    ),
+    path(
+        'v1/auth/token/',
+        send_token,
+        name='token_obtain_pair'
+    )
+]
 urlpatterns += router_v1.urls
