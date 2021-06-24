@@ -157,3 +157,7 @@ SIMPLE_JWT = {
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
+DOMEN_NAME = '@yamdb.ru'
+ADMIN_USERNAME = 'admin'
+EMAIL_ADMIN = ADMIN_USERNAME + DOMEN_NAME
