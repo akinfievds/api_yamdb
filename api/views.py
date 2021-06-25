@@ -14,33 +14,27 @@ from api.serializers import (
 from api.permissions import IsAdminOrReadOnly, IsAuthorOrStaffOrReadOnly
 
 
-class MixinViewSet(
+class CustomViewSet(
     mixins.CreateModelMixin,
     mixins.DestroyModelMixin,
     mixins.ListModelMixin,
     viewsets.GenericViewSet
 ):
-    pass
+    pagination_class = PageNumberPagination
+    permission_classes = [IsAdminOrReadOnly, ]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['=name', ]
+    lookup_field = 'slug'
 
 
-class GenreViewSet(MixinViewSet):
+class GenreViewSet(CustomViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    pagination_class = PageNumberPagination
-    permission_classes = [IsAdminOrReadOnly, ]
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['=name', ]
-    lookup_field = 'slug'
 
 
-class CategoryViewSet(MixinViewSet):
+class CategoryViewSet(CustomViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    pagination_class = PageNumberPagination
-    permission_classes = [IsAdminOrReadOnly, ]
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['=name', ]
-    lookup_field = 'slug'
 
 
 class TitleViewSet(viewsets.ModelViewSet):
