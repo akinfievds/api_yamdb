@@ -2,16 +2,26 @@ from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.decorators import action
+from rest_framework.pagination import (
+    PageNumberPagination, LimitOffsetPagination
+)
+from rest_framework.permissions import (
+    IsAuthenticated, IsAuthenticatedOrReadOnly
+)
+from rest_framework.response import Response
 
 from api.filters import TitleFilter
 from api.models import Category, Genre, Review, Title
 from api.serializers import (
     CategorySerializer, CommentsSerializer, GenreSerializer,
-    ReviewSerializer, TitleGetSerializer, TitlePostSerializer
+    ReviewSerializer, TitleGetSerializer, TitlePostSerializer,
+    UserSerializer
 )
-from api.permissions import IsAdminOrReadOnly, IsAuthorOrStaffOrReadOnly
+from api.permissions import (
+    IsAdmin, IsAdminOrReadOnly, IsAuthorOrStaffOrReadOnly
+)
+from users.models import User
 
 
 class CustomViewSet(
@@ -83,3 +93,25 @@ class CommentsViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
         serializer.save(author=self.request.user, review=review)
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAdmin, ]
+    pagination_class = LimitOffsetPagination
+    lookup_field = 'username'
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['username', ]
+
+    @action(methods=['PATCH', 'GET'], detail=False,
+            permission_classes=[IsAuthenticated, ])
+    def me(self, request, *args, **kwargs):
+        user = self.request.user
+        serializer = self.get_serializer(user)
+        if self.request.method == 'PATCH':
+            serializer = self.get_serializer(
+                user, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(email=user.email, role=user.role)
+        return Response(serializer.data)

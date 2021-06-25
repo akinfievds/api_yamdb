@@ -102,11 +102,6 @@ class Title(models.Model):
 
 
 class Review(models.Model):
-    class Meta:
-        verbose_name = 'Отзыв'
-        verbose_name_plural = 'Отзывы'
-        ordering = ('-pub_date', )
-
     FORMAT = (
         'Текст: {text} \n'
         'На произведение: {title}\n'
@@ -148,6 +143,11 @@ class Review(models.Model):
         verbose_name='Дата и время написания отзыва'
     )
 
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+        ordering = ('-pub_date', )
+
     def __str__(self):
         return self.FORMAT.format(
             text=textwrap.shorten(self.text, 40),
@@ -158,11 +158,6 @@ class Review(models.Model):
 
 
 class Comments(models.Model):
-    class Meta:
-        verbose_name = 'Комментарий'
-        verbose_name_plural = 'Комментарии'
-        ordering = ('-pub_date', )
-
     FORMAT = (
         'Отзыв: {review}\n'
         'Комментарий: {text}\n'
@@ -192,6 +187,11 @@ class Comments(models.Model):
         auto_now_add=True,
         verbose_name='Дата и время добавления комментария'
     )
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+        ordering = ('-pub_date', )
 
     def __str__(self):
         return self.FORMAT.format(
