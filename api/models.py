@@ -8,11 +8,6 @@ from users.models import User
 
 
 class Category(models.Model):
-    class Meta:
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Категории'
-        ordering = ('pk', )
-
     name = models.CharField(
         max_length=200,
         verbose_name='Название категории',
@@ -22,16 +17,16 @@ class Category(models.Model):
         verbose_name='Идентификатор категории',
     )
 
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
+        ordering = ('pk', )
+
     def __str__(self) -> str:
         return self.name
 
 
 class Genre(models.Model):
-    class Meta:
-        verbose_name = 'Жанр'
-        verbose_name_plural = 'Жанры'
-        ordering = ('pk', )
-
     name = models.CharField(
         max_length=200,
         verbose_name='Название жанра',
@@ -41,16 +36,16 @@ class Genre(models.Model):
         verbose_name='Идентификатор жанра',
     )
 
+    class Meta:
+        verbose_name = 'Жанр'
+        verbose_name_plural = 'Жанры'
+        ordering = ('pk', )
+
     def __str__(self) -> str:
         return self.name
 
 
 class Title(models.Model):
-    class Meta:
-        verbose_name = 'Произведение'
-        verbose_name_plural = 'Произведения'
-        ordering = ('-id', )
-
     FORMAT = (
         'Название произведения: {name}\n'
         'Описание произведения: {description}\n'
@@ -87,6 +82,11 @@ class Title(models.Model):
         related_name='titles',
         verbose_name='Категория',
     )
+
+    class Meta:
+        verbose_name = 'Произведение'
+        verbose_name_plural = 'Произведения'
+        ordering = ('-id', )
 
     def __str__(self):
         description = self.description
