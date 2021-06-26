@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.filters import TitleFilter
-from api.models import Category, Genre, Review, Title
+from api.models import Category, Genre, Review, Title, User
 from api.serializers import (
     CategorySerializer, CommentsSerializer, GenreSerializer,
     ReviewSerializer, SendMessageSerializer, TitleGetSerializer,
@@ -24,7 +24,6 @@ from api.permissions import (
     IsAdmin, IsAdminOrReadOnly, IsAuthorOrStaffOrReadOnly
 )
 from api_yamdb.settings import EMAIL_ADMIN
-from users.models import User
 
 
 @api_view(['POST'])
