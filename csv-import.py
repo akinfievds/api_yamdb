@@ -66,8 +66,8 @@ if __name__ == '__main__':
     connection = sqlite3.connect(DB_PATH)
     cursor = connection.cursor()
 
-    for i in CSV_FILES_TABLE_NAMES:
-        path_to_file, table_name = i
+    for file_table in CSV_FILES_TABLE_NAMES:
+        path_to_file, table_name = file_table
         result = copy_csv_to_db(
             path_to_csv=path_to_file,
             table_name=table_name

@@ -6,6 +6,28 @@ from api.models import Category, Comments, Genre, Review, Title
 from users.models import User
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'first_name',
+            'last_name',
+            'username',
+            'bio',
+            'email',
+            'role'
+        ]
+
+
+class SendMessageSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class TokenSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    confirmation_code = serializers.CharField()
+
+
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('name', 'slug', )
@@ -93,16 +115,3 @@ class CommentsSerializer(serializers.ModelSerializer):
     class Meta:
         exclude = ['review', ]
         model = Comments
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = [
-            'first_name',
-            'last_name',
-            'username',
-            'bio',
-            'email',
-            'role'
-        ]
