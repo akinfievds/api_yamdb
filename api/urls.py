@@ -1,52 +1,48 @@
-from django.urls import path
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from api.views import (
-    CategoryViewSet, CommentsViewSet, GenreViewSet, ReviewViewSet,
-    TitleViewSet
-)
-from users.views import UserViewSet, send_email, send_token
+from api.views import (CategoryViewSet, CommentsViewSet, GenreViewSet,
+                       ReviewViewSet, TitleViewSet, UserViewSet, send_email,
+                       send_token)
 
 router_v1 = DefaultRouter()
 router_v1.register(
-    'v1/users',
+    'users',
     UserViewSet,
     basename='users'
 )
 router_v1.register(
-    'v1/genres',
+    'genres',
     GenreViewSet,
     basename='genres'
 )
 router_v1.register(
-    'v1/categories',
+    'categories',
     CategoryViewSet,
     basename='categories'
 )
 router_v1.register(
-    r'v1/titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
+    r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
     CommentsViewSet,
     basename='comments'
 )
 router_v1.register(
-    r'v1/titles/(?P<title_id>\d+)/reviews',
+    r'titles/(?P<title_id>\d+)/reviews',
     ReviewViewSet,
     basename='reviews'
 )
 router_v1.register(
-    'v1/titles',
+    'titles',
     TitleViewSet,
     basename='titles'
 )
 
-urlpatterns = [
-    path(
-        'v1/auth/email/', send_email
-    ),
-    path(
-        'v1/auth/token/',
-        send_token,
-        name='token_obtain_pair'
-    )
+authpatterns = [
+    path('email/', send_email, name='send_email'),
+    path('token/', send_token, name='send_token')    
 ]
-urlpatterns += router_v1.urls
+
+urlpatterns = [
+    path('v1/auth/', include(authpatterns)),
+    path('v1/', include(router_v1.urls))
+]

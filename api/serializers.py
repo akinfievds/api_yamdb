@@ -1,8 +1,31 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from users.models import User
 
 from api.models import Category, Comments, Genre, Review, Title
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'first_name',
+            'last_name',
+            'username',
+            'bio',
+            'email',
+            'role'
+        ]
+
+
+class SendMessageSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class TokenSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    confirmation_code = serializers.CharField()
 
 
 class GenreSerializer(serializers.ModelSerializer):
