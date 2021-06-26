@@ -21,6 +21,13 @@ class UserSerializer(serializers.ModelSerializer):
 class SendMessageSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
+    def validate(self, data):
+        email = data.get('email')
+        if User.objects.filter(email=email).exists():
+            error_msg = 'Пользователь с таким email уже есть в базе'
+            raise ValidationError(error_msg)
+        return data
+
 
 class TokenSerializer(serializers.Serializer):
     email = serializers.EmailField()
