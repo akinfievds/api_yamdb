@@ -2,8 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from api.models import Category, Comments, Genre, Review, Title
-from users.models import User
+from api.models import Category, Comments, Genre, Review, Title, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -93,14 +92,23 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         request = self.context['request']
-        if request.method == 'GET' or request.method == 'PATCH':
+        if request.method == 'GET':
             return data
         title_id = self.context['view'].kwargs.get('title_id')
         title = get_object_or_404(Title, pk=title_id)
-        if Review.objects.filter(title=title, author=request.user).exists():
+        review_status = Review.objects.filter(
+            title=title,
+            author=request.user
+        ).exists()
+        if request.method == 'POST' and review_status:
             error_msg = (
                 'По правилам ресурса от каждого пользователя '
                 'для каждого произведения допускается только 1 отзыв'
+            )
+            raise ValidationError(error_msg)
+        if request.method == 'PATCH' and not review_status:
+            error_msg = (
+                'Отзыва с заданными параметрами не существует'
             )
             raise ValidationError(error_msg)
         return data

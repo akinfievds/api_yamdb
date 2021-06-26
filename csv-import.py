@@ -3,7 +3,7 @@ import sqlite3
 
 
 def copy_csv_to_db(path_to_csv, table_name):
-    with open(path_to_csv) as file:
+    with open(path_to_csv, encoding='utf8') as file:
         line = 0
         for row in csv.reader(file):
             line += 1
@@ -23,6 +23,12 @@ def copy_csv_to_db(path_to_csv, table_name):
                         '\033[1;31m' + 'Похоже с данными что-то не так '
                         'или таблица уже заполнена.' + '\033[0m' + '\nОшибка:'
                     )
+                    if 'UNIQUE constraint failed' in err1.args[0]:
+                        msg1 = (
+                            '\033[1;31m' + 'Одно из значений из файла CSV '
+                            'совпадает с существующим в ячейках с уникальными '
+                            'значениями.' + '\033[0m' + '\nОшибка:'
+                        )
                     print(msg1, err1)
                     return False
                 except sqlite3.OperationalError as err2:
@@ -55,7 +61,7 @@ def check_result(path_to_db, table_name, result=None):
 if __name__ == '__main__':
     DB_PATH = 'db.sqlite3'
     CSV_FILES_TABLE_NAMES = [
-        ['data/users.csv', 'users_user'],
+        ['data/users.csv', 'api_user'],
         ['data/category.csv', 'api_category'],
         ['data/genre_title.csv', 'api_title_genre'],
         ['data/genre.csv', 'api_genre'],
