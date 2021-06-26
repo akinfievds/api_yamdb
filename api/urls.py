@@ -1,11 +1,14 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from api.views import (CategoryViewSet, CommentsViewSet, GenreViewSet,
-                       ReviewViewSet, TitleViewSet, UserViewSet, send_email,
-                       send_token)
+from api.views import (
+    CategoryViewSet, CommentsViewSet, GenreViewSet,
+    ReviewViewSet, TitleViewSet, UserViewSet, send_email,
+    send_token
+)
 
 router_v1 = DefaultRouter()
+
 router_v1.register(
     'users',
     UserViewSet,
@@ -39,7 +42,7 @@ router_v1.register(
 
 authpatterns = [
     path('email/', send_email, name='send_email'),
-    path('token/', send_token, name='send_token')    
+    path('token/', send_token, name='send_token')
 ]
 
 urlpatterns = [

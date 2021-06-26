@@ -1,9 +1,9 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from users.models import User
 
 from api.models import Category, Comments, Genre, Review, Title
+from users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -87,20 +87,23 @@ class ReviewSerializer(serializers.ModelSerializer):
         default=serializers.CurrentUserDefault(),
     )
 
-    def validate(self, data):
-        if self.context['request'].method == 'POST':
-            title_id = self.context['view'].kwargs.get('title_id')
-            title = get_object_or_404(Title, pk=title_id)
-            if Review.objects.filter(
-                title=title,
-                author=self.context['request'].user
-            ).exists():
-                raise ValidationError('Вы можете написать только 1 отзыв')
-        return data
-
     class Meta:
         exclude = ['title', ]
         model = Review
+
+    def validate(self, data):
+        request = self.context['request']
+        if request.method == 'GET' or request.method == 'PATCH':
+            return data
+        title_id = self.context['view'].kwargs.get('title_id')
+        title = get_object_or_404(Title, pk=title_id)
+        if Review.objects.filter(title=title, author=request.user).exists():
+            error_msg = (
+                'По правилам ресурса от каждого пользователя '
+                'для каждого произведения допускается только 1 отзыв'
+            )
+            raise ValidationError(error_msg)
+        return data
 
 
 class CommentsSerializer(serializers.ModelSerializer):

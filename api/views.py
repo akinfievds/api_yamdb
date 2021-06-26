@@ -1,39 +1,30 @@
-from api_yamdb.settings import EMAIL_ADMIN
 from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import (AllowAny, IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
+from rest_framework.pagination import (
+    PageNumberPagination, LimitOffsetPagination
+)
+from rest_framework.permissions import (
+    AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from users.models import User
 
 from api.filters import TitleFilter
 from api.models import Category, Genre, Review, Title
-from api.permissions import (IsAdmin, IsAdminOrReadOnly,
-                             IsAuthorOrStaffOrReadOnly)
-from api.serializers import (CategorySerializer, CommentsSerializer,
-                             GenreSerializer, ReviewSerializer,
-                             SendMessageSerializer, TitleGetSerializer,
-                             TitlePostSerializer, TokenSerializer,
-                             UserSerializer)
-
-
-class CustomViewSet(
-    mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet
-):
-    pagination_class = PageNumberPagination
-    permission_classes = [IsAdminOrReadOnly, ]
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['=name', ]
-    lookup_field = 'slug'
+from api.serializers import (
+    CategorySerializer, CommentsSerializer, GenreSerializer,
+    ReviewSerializer, SendMessageSerializer, TitleGetSerializer,
+    TitlePostSerializer, TokenSerializer, UserSerializer
+)
+from api.permissions import (
+    IsAdmin, IsAdminOrReadOnly, IsAuthorOrStaffOrReadOnly
+)
+from api_yamdb.settings import EMAIL_ADMIN
+from users.models import User
 
 
 @api_view(['POST'])
@@ -78,7 +69,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdmin, ]
-    pagination_class = PageNumberPagination
+    pagination_class = LimitOffsetPagination
     lookup_field = 'username'
     filter_backends = [filters.SearchFilter]
     search_fields = ['username', ]
@@ -94,6 +85,19 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save(email=user.email, role=user.role)
         return Response(serializer.data)
+
+
+class CustomViewSet(
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
+    pagination_class = PageNumberPagination
+    permission_classes = [IsAdminOrReadOnly, ]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['=name', ]
+    lookup_field = 'slug'
 
 
 class GenreViewSet(CustomViewSet):

@@ -1,4 +1,3 @@
-import argparse
 import csv
 import sqlite3
 
@@ -38,7 +37,7 @@ def copy_csv_to_db(path_to_csv, table_name):
 
 
 def check_result(path_to_db, table_name, result=None):
-    select_all = 'SELECT * FROM {table}'.format(table=args.table)
+    select_all = 'SELECT * FROM {table}'.format(table=table_name)
     db_echo = cursor.execute(select_all).fetchall()
     if result and db_echo:
         print(
@@ -54,17 +53,30 @@ def check_result(path_to_db, table_name, result=None):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--db', help='Path to database')
-    parser.add_argument('--csv', help='Path to csv file')
-    parser.add_argument('--table', help='SQL Table name')
-    args = parser.parse_args()
+    DB_PATH = 'db.sqlite3'
+    CSV_FILES_TABLE_NAMES = [
+        ['data/users.csv', 'users_user'],
+        ['data/category.csv', 'api_category'],
+        ['data/genre_title.csv', 'api_title_genre'],
+        ['data/genre.csv', 'api_genre'],
+        ['data/review.csv', 'api_review'],
+        ['data/titles.csv', 'api_title']
+    ]
 
-    connection = sqlite3.connect(args.db)
+    connection = sqlite3.connect(DB_PATH)
     cursor = connection.cursor()
 
-    result = copy_csv_to_db(path_to_csv=args.csv, table_name=args.table)
-    check_result(path_to_db=args.db, table_name=args.table, result=result)
+    for file_table in CSV_FILES_TABLE_NAMES:
+        path_to_file, table_name = file_table
+        result = copy_csv_to_db(
+            path_to_csv=path_to_file,
+            table_name=table_name
+        )
+        check_result(
+            path_to_db=DB_PATH,
+            table_name=table_name,
+            result=result
+        )
 
     connection.commit()
     connection.close()
