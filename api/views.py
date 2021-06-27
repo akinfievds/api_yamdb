@@ -1,8 +1,10 @@
+import uuid
+
 from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, mixins, viewsets
+from rest_framework import filters, mixins, serializers, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.pagination import (
     PageNumberPagination, LimitOffsetPagination
@@ -33,13 +35,15 @@ def send_email(request):
     serializer.is_valid(raise_exception=True)
     email = serializer.data.get('email')
     username = email.replace('@', '_').lower()
-    user = User.objects.create(
+    confirmation_code = uuid.uuid4()
+    User.objects.create(
         username=username,
-        email=email
+        email=email,
+        confirmation_code=confirmation_code
     )
     send_mail(
         'Ваш код подтверждения',
-        str(user.confirmation_code),
+        str(confirmation_code),
         EMAIL_ADMIN,
         [email]
     )

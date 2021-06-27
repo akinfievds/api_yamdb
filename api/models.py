@@ -1,5 +1,4 @@
 import textwrap
-import uuid
 
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -15,9 +14,9 @@ class User(AbstractUser):
         ADMIN = 'admin'
         MODERATOR = 'moderator'
         choices = [
-            (USER, 'user'),
-            (ADMIN, 'admin'),
-            (MODERATOR, 'moderator'),
+            (USER, 'USER'),
+            (ADMIN, 'ADMIN'),
+            (MODERATOR, 'MODERATOR'),
         ]
 
     email = models.EmailField(
@@ -30,14 +29,11 @@ class User(AbstractUser):
         verbose_name='Информация о пользователе'
     )
     role = models.CharField(
-        max_length=12,
+        max_length=9,
         choices=UserRole.choices,
         default=UserRole.USER
     )
-    confirmation_code = models.UUIDField(
-        default=uuid.uuid4,
-        editable=False
-    )
+    confirmation_code = models.CharField(max_length=30, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', ]
