@@ -35,8 +35,8 @@ def send_email(request):
     serializer.is_valid(raise_exception=True)
     email = serializer.data.get('email')
     confirmation_code = uuid.uuid4()
-    username = email.replace('@', '_').lower()
     if not User.objects.filter(email=email).exists():
+        username = email.replace('@', '_').lower()
         User.objects.create(
             username=username,
             email=email,
