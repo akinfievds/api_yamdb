@@ -96,17 +96,17 @@ class ReviewSerializer(serializers.ModelSerializer):
             return data
         title_id = self.context['view'].kwargs.get('title_id')
         title = get_object_or_404(Title, pk=title_id)
-        review_status = Review.objects.filter(
+        review_exists = Review.objects.filter(
             title=title,
             author=request.user
         ).exists()
-        if request.method == 'POST' and review_status:
+        if request.method == 'POST' and review_exists:
             error_msg = (
                 'По правилам ресурса от каждого пользователя '
                 'для каждого произведения допускается только 1 отзыв'
             )
             raise ValidationError(error_msg)
-        if request.method == 'PATCH' and not review_status:
+        if request.method == 'PATCH' and not review_exists:
             error_msg = (
                 'Отзыва с заданными параметрами не существует'
             )
