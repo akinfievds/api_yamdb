@@ -32,15 +32,6 @@ from api_yamdb.settings import EMAIL_ADMIN
 @permission_classes((AllowAny, ))
 def send_email(request):
     serializer = SendMessageSerializer(data=request.data)
-    # confirmation_code = uuid.uuid4()
-    # email = request.data.get('email')
-    # username = email.replace('@', '_').lower()
-    # if not User.objects.filter(email=email).exists():
-    #     User.objects.create(
-    #         username=username,
-    #         email=email,
-    #         confirmation_code=confirmation_code
-    #     )
     serializer.is_valid(raise_exception=True)
     email = serializer.data.get('email')
     confirmation_code = uuid.uuid4()
