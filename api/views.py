@@ -6,7 +6,7 @@ from django.db.models import Avg
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, mixins, serializers, viewsets
+from rest_framework import filters, mixins, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.pagination import (
     PageNumberPagination, LimitOffsetPagination
@@ -55,7 +55,10 @@ def send_email(request):
             [email]
         )
         return Response(
-            {'email': f'Код для получения token отправлен на Вашу почту: {email}'}
+            {
+                'email':
+                f'Код для получения token отправлен на Вашу почту: {email}'
+            }
         )
 
 
