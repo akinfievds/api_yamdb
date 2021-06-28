@@ -29,7 +29,7 @@ class User(AbstractUser):
         verbose_name='Информация о пользователе'
     )
     role = models.CharField(
-        max_length=20,
+        max_length=40,
         choices=UserRole.choices,
         default=UserRole.USER
     )
