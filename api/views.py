@@ -1,9 +1,7 @@
 import uuid
 
 from django.core.mail import send_mail
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Avg
-from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
@@ -35,11 +33,11 @@ from api_yamdb.settings import EMAIL_ADMIN
 def send_email(request):
     serializer = SendMessageSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    try:
-        email = serializer.data.get('email')
-        user = User.objects.get(email='email')
+    email = serializer.data.get('email')
+    if User.objects.filter(email=email).exists():
+        user = User.objects.get(email=email)
         confirmation_code = user.confirmation_code
-    except ObjectDoesNotExist:
+    else:
         username = email.replace('@', '_').lower()
         confirmation_code = uuid.uuid4()
         User.objects.create(
@@ -47,19 +45,18 @@ def send_email(request):
             email=email,
             confirmation_code=confirmation_code
         )
-    finally:
-        send_mail(
-            'Ваш код подтверждения',
-            str(confirmation_code),
-            EMAIL_ADMIN,
-            [email]
-        )
-        return Response(
-            {
-                'email':
-                f'Код для получения token отправлен на Вашу почту: {email}'
-            }
-        )
+    send_mail(
+        'Ваш код подтверждения',
+        str(confirmation_code),
+        EMAIL_ADMIN,
+        [email]
+    )
+    return Response(
+        {
+            'email':
+            f'Код для получения token отправлен на Вашу почту: {email}'
+        }
+    )
 
 
 @api_view(['POST'])
