@@ -1,10 +1,12 @@
 import uuid
 
 from django.core.mail import send_mail
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Avg
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, mixins, viewsets
+from rest_framework import filters, mixins, serializers, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.pagination import (
     PageNumberPagination, LimitOffsetPagination
@@ -33,24 +35,28 @@ from api_yamdb.settings import EMAIL_ADMIN
 def send_email(request):
     serializer = SendMessageSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    email = serializer.data.get('email')
-    confirmation_code = uuid.uuid4()
-    if not User.objects.filter(email=email).exists():
+    try:
+        email = serializer.data.get('email')
+        user = User.objects.get(email='email')
+        confirmation_code = user.confirmation_code
+    except ObjectDoesNotExist:
         username = email.replace('@', '_').lower()
+        confirmation_code = uuid.uuid4()
         User.objects.create(
             username=username,
             email=email,
             confirmation_code=confirmation_code
         )
-    send_mail(
-        'Ваш код подтверждения',
-        str(confirmation_code),
-        EMAIL_ADMIN,
-        [email]
-    )
-    return Response(
-        {'email': f'Код для получения token отправлен на Вашу почту: {email}'}
-    )
+    finally:
+        send_mail(
+            'Ваш код подтверждения',
+            str(confirmation_code),
+            EMAIL_ADMIN,
+            [email]
+        )
+        return Response(
+            {'email': f'Код для получения token отправлен на Вашу почту: {email}'}
+        )
 
 
 @api_view(['POST'])
